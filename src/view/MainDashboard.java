@@ -1,111 +1,72 @@
 package view;
 
-import dao.EquipoDAO;
-import dao.EquipoDAOImpl;
+import dao.*;
+import dto.FichajeDTO;
 import model.Equipo;
+import model.Jugador;
+
+import java.awt.BorderLayout;
+
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-import java.util.List;
 
 public class MainDashboard extends JFrame {
+
+    //DAOs
+    private EquipoDAO equipoDAO = new EquipoDAOImpl();
+    private UsuarioDAO usuarioDAO = new UsuarioDAOImpl();
+    private FichajeDAO fichajeDAO = new FichajeDAOImp();
+
+    //Componentes de quipos
     private JTable tablaEquipos;
     private DefaultTableModel modeloTabla;
-    private EquipoDAO equipoDAO = new EquipoDAOImpl();
-    
-    // Campos del formulario lateral
     private JTextField txtNombreEquipo, txtCategoria;
-    private JButton btnGuardar, btnEliminar;
 
-    public MainDashboard() {
-        setTitle("Club Deportivo Ayala - Panel Principal");
-        setSize(800, 500);
+    //COmponentes de Fichajes (Relacion N:M)
+    private JComboBox<Jugador> comboJugadores;
+    private JComboBox<Equipo> comboEquipos;
+    private JTable tablaJugadores;
+    private DefaultTableModel modeloTablaJugadores;
+    private JTable tablaFichajes;
+    private DefaultTableModel modeloTablaFichajes;
+
+    public MainDashboard(){
+        setTitle("Club Deportivo Ayala");
+        setSize(1000, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        setLayout(new BorderLayout(10, 10));
 
-        // 1. MENU SUPERIOR
+        //1. Menu superior
+        initMenu();
+
+        //2. Panel central
+        initTabla();
+
+        //3. Panel lateral
+        initPanelLateral();
+
+        //Cargar datos iniciales
+        actualizarTabla();
+        actualizarCombos();
+    }
+
+    private void initMenu(){
         JMenuBar menuBar = new JMenuBar();
-        JMenu menuSesion = new JMenu("Sesión");
-        JMenuItem itemCerrar = new JMenuItem("Cerrar Sesión");
-        itemCerrar.addActionListener(e -> {
+        JMenu menuArchivo = new JMenuBar("Sesión");
+        JMenuItem itemSalir = new JMenuItem("Cerrar Sesión");
+        itemSalir.addActionListener(e -> {
             new LoginFrame().setVisible(true);
             dispose();
         });
-        menuSesion.add(itemCerrar);
-        menuBar.add(menuSesion);
+        menuArchivo.add(itemSalir);
+        menuBar.add(menuArchivo);
         setJMenuBar(menuBar);
+    }
 
-        // 2. PANEL CENTRAL (TABLA)
-        String[] columnas = {"ID", "Nombre del Equipo", "Categoría"};
-        modeloTabla = new DefaultTableModel(columnas, 0);
-        tablaEquipos = new JTable(modeloTabla);
-        actualizarTabla(); // Cargar datos al iniciar
-
-        // 3. PANEL LATERAL (FORMULARIO)
-        JPanel pnlLateral = new JPanel(new GridLayout(6, 1, 10, 10));
-        pnlLateral.setBorder(BorderFactory.createTitledBorder("Gestión de Equipos"));
+    private void initTabla(){
         
-        txtNombreEquipo = new JTextField();
-        txtCategoria = new JTextField();
-        btnGuardar = new JButton("Nuevo Equipo");
-        btnEliminar = new JButton("Eliminar Seleccionado");
-
-        pnlLateral.add(new JLabel("Nombre:"));
-        pnlLateral.add(txtNombreEquipo);
-        pnlLateral.add(new JLabel("Categoría:"));
-        pnlLateral.add(txtCategoria);
-        pnlLateral.add(btnGuardar);
-        pnlLateral.add(btnEliminar);
-
-        // 4. ACCIONES
-        btnGuardar.addActionListener(e -> guardarEquipo());
-        btnEliminar.addActionListener(e -> eliminarEquipo());
-
-        // ENSAMBLADO FINAL
-        setLayout(new BorderLayout());
-        add(new JScrollPane(tablaEquipos), BorderLayout.CENTER);
-        add(pnlLateral, BorderLayout.EAST);
     }
 
-    private void actualizarTabla() {
-        modeloTabla.setRowCount(0); // Limpiar tabla
-        List<Equipo> lista = equipoDAO.listarTodos();
-        for (Equipo eq : lista) {
-            Object[] fila = {eq.getId(), eq.getNombre(), eq.getCategoria()};
-            modeloTabla.addRow(fila);
-        }
-    }
-
-    private void guardarEquipo() {
-        if (txtNombreEquipo.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "El nombre es obligatorio");
-            return;
-        }
-        Equipo eq = new Equipo();
-        eq.setNombre(txtNombreEquipo.getText());
-        eq.setCategoria(txtCategoria.getText());
-
-        if (equipoDAO.insertar(eq)) {
-            JOptionPane.showMessageDialog(this, "Equipo guardado");
-            txtNombreEquipo.setText("");
-            txtCategoria.setText("");
-            actualizarTabla();
-        }
-    }
-
-    private void eliminarEquipo() {
-        int fila = tablaEquipos.getSelectedRow();
-        if (fila == -1) {
-            JOptionPane.showMessageDialog(this, "Selecciona un equipo de la tabla");
-            return;
-        }
-        int id = (int) modeloTabla.getValueAt(fila, 0);
-        int confirmar = JOptionPane.showConfirmDialog(this, "¿Borrar equipo?");
-        
-        if (confirmar == JOptionPane.YES_OPTION) {
-            if (equipoDAO.eliminar(id)) {
-                actualizarTabla();
-            }
-        }
-    }
 }
