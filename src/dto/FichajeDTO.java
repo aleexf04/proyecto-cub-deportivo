@@ -9,6 +9,8 @@ public class FichajeDTO {
     private String nombreEquipo;
     private String posicion;
     private Date fechaFichaje;
+    private int idJugador;
+    private int idEquipo;
 
     // Constructor, Getters y Setters
     public FichajeDTO() {
@@ -29,12 +31,29 @@ public class FichajeDTO {
     public void setNombreEquipo(String nombreEquipo) {
         this.nombreEquipo = nombreEquipo;
     }
-    
-    public String getPosicion(){
+
+    public String getPosicion() {
         return posicion;
     }
 
-    public void setPosicion(String posicion){
+    public void setPosicion(String posicion) {
         this.posicion = posicion;
     }
+
+    public int getIdJugador() {
+        return idJugador;
+    }
+
+    public void setIdJugador(int idJugador) {
+        this.idJugador = idJugador;
+    }
+
+    public int getIdEquipo() {
+        return idEquipo;
+    }
+
+    public void setIdEquipo(int idEquipo) {
+        this.idEquipo = idEquipo;
+    }
+
 }
