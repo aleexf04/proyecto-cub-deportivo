@@ -1,9 +1,9 @@
 package dao;
 
 import dto.FichajeDTO;
-impor java.util.List;
+import java.util.List;
 
-public class FichajeDAO {
+public interface FichajeDAO {
     boolean asignarEquipo(int idJugador, int idEquipo);
     List<FichajeDTO> listarFichajes();
 }

@@ -3,7 +3,6 @@ package view;
 import dao.UsuarioDAO;
 import dao.UsuarioDAOImpl;
 import java.awt.GridLayout;
-
 import javax.swing.*;
 
 public class LoginFrame extends JFrame{
@@ -15,7 +14,7 @@ public class LoginFrame extends JFrame{
     public LoginFrame(){
         usuarioDAO = new UsuarioDAOImpl();
 
-        settitle("Club Deportivo - Acceso");
+        setTitle("Club Deportivo - Acceso");
         setSize(350, 250);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -48,10 +47,10 @@ public class LoginFrame extends JFrame{
 
     private void ejecutarLogin(){
         String user = txtUser.getText();
-        String papss = new String(txtPass.getPassword());
+        String pass = new String(txtPass.getPassword());
 
         if(usuarioDAO.login(user,pass)){
-            JOptionPane.showMwssageDialog(this, "¡Bienvenido al Club!");
+            JOptionPane.showMessageDialog(this, "¡Bienvenido al Club!");
             new MainDashboard().setVisible(true);
             this.dispose();
         } else {

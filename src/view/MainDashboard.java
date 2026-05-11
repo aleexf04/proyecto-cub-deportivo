@@ -2,23 +2,17 @@ package view;
 
 import dao.*;
 import dto.FichajeDTO;
-import model.Equipo;
-import model.Jugador;
-
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-
+import java.awt.*;
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import model.*;
 
 public class MainDashboard extends JFrame {
 
     //DAOs
     private EquipoDAO equipoDAO = new EquipoDAOImpl();
     private UsuarioDAO usuarioDAO = new UsuarioDAOImpl();
-    private FichajeDAO fichajeDAO = new FichajeDAOImp();
+    private FichajeDAO fichajeDAO = new FichajeDAOImpl();
 
     //Componentes de quipos
     private JTable tablaEquipos;
@@ -56,7 +50,7 @@ public class MainDashboard extends JFrame {
 
     private void initMenu(){
         JMenuBar menuBar = new JMenuBar();
-        JMenu menuArchivo = new JMenuBar("Sesión");
+        JMenu menuArchivo = new JMenu("Sesión");
         JMenuItem itemSalir = new JMenuItem("Cerrar Sesión");
         itemSalir.addActionListener(e -> {
             new LoginFrame().setVisible(true);
@@ -122,7 +116,7 @@ public class MainDashboard extends JFrame {
 
         // Fichajes
         JPanel pnlFichajes = new JPanel(new GridLayout(5, 1, 5, 5));
-        pnlFichajes.SetBorder(BorderFactory.createTitledBorder("Asignar jugador a equipo"));
+        pnlFichajes.setBorder(BorderFactory.createTitledBorder("Asignar Jugador a Equipo"));
 
         comboJugadores = new JComboBox<>();
         comboEquipos = new JComboBox<>();
@@ -142,9 +136,9 @@ public class MainDashboard extends JFrame {
         add(pnlDerecho, BorderLayout.EAST);
 
         //Eventos
-        btnGuardarEq.addActionListener(e -> accionGuardarEquipo);
-        btnEliminarEq.addActionListener(e -> accionEliminarEquipo);
-        btnFichar.addActionListener(e -> accionFichar);
+        btnGuardarEq.addActionListener(e -> accionGuardarEquipo());
+        btnEliminarEq.addActionListener(e -> accionEliminarEquipo());
+        btnFichar.addActionListener(e -> accionFichar());
     }
 
     private void actualizarTabla(){

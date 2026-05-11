@@ -1,8 +1,9 @@
 package dao;
 
 import db.ConexionDB;
-import model.Jugador;
 import java.sql.*;
+import model.Entrenador;
+import model.Jugador;
 
 public class UsuarioDAOImpl implements UsuarioDAO {
 
@@ -28,7 +29,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             ResultSet rs = psUser.getGeneratedKeys();
             if (rs.next()) {
                 int newId = rs.getInt(1);
-                
+
                 // 2. Insertar en tabla JUGADORES usando ese ID
                 String sqlJug = "INSERT INTO jugadores (usuario_id, posicion, dorsal) VALUES (?,?,?)";
                 PreparedStatement psJug = conn.prepareStatement(sqlJug);
@@ -41,19 +42,82 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             conn.commit(); // Si todo va bien, guardamos
             return true;
         } catch (SQLException ex) {
-            if (conn != null) try { conn.rollback(); } catch (SQLException e) { e.printStackTrace(); }
+            if (conn != null) try {
+                conn.rollback();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
             ex.printStackTrace();
             return false;
         } finally {
-            if (conn != null) try { conn.close(); } catch (SQLException e) { e.printStackTrace(); }
+            if (conn != null) try {
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public boolean registrarEntrenador(Entrenador e) {
+        Connection conn = null;
+        try {
+            conn = ConexionDB.getConnection();
+            conn.setAutoCommit(false); // Transacción para asegurar que se crean ambos registros
+
+            // 1. Insertar en la tabla padre (USUARIOS)
+            String sqlUser = "INSERT INTO usuarios (username, password, email, nombre, apellidos, rol) VALUES (?,?,?,?,?,?)";
+            PreparedStatement psUser = conn.prepareStatement(sqlUser, Statement.RETURN_GENERATED_KEYS);
+            psUser.setString(1, e.getUsername());
+            psUser.setString(2, e.getPassword());
+            psUser.setString(3, e.getEmail());
+            psUser.setString(4, e.getNombre());
+            psUser.setString(5, e.getApellidos());
+            psUser.setString(6, "ENTRENADOR");
+            psUser.executeUpdate();
+
+            // Obtener el ID generado para el usuario
+            ResultSet rs = psUser.getGeneratedKeys();
+            if (rs.next()) {
+                int newId = rs.getInt(1);
+
+                // 2. Insertar en la tabla hija (ENTRENADORES) usando ese ID
+                // IMPORTANTE: Revisa que estos nombres coincidan con tu DB
+                String sqlEnt = "INSERT INTO entrenadores (usuario_id, especialidad, experiencia_anios) VALUES (?,?,?)";
+                PreparedStatement psEnt = conn.prepareStatement(sqlEnt);
+                psEnt.setInt(1, newId);
+                psEnt.setString(2, e.getEspecialidad());
+                psEnt.setInt(3, e.getExperienciaAnios());
+                psEnt.executeUpdate();
+            }
+
+            conn.commit(); // Guardamos los dos inserts
+            return true;
+        } catch (SQLException ex) {
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException rollbackEx) {
+                    rollbackEx.printStackTrace();
+                }
+            }
+            ex.printStackTrace();
+            return false;
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException closeEx) {
+                    closeEx.printStackTrace();
+                }
+            }
         }
     }
 
     @Override
     public boolean login(String user, String pass) {
         String sql = "SELECT * FROM usuarios WHERE username = ? AND password = ?";
-        try (Connection conn = ConexionDB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = ConexionDB.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, user);
             ps.setString(2, pass);
             return ps.executeQuery().next();
@@ -62,9 +126,28 @@ public class UsuarioDAOImpl implements UsuarioDAO {
         }
     }
 
+
     @Override
-    public boolean registrarEntrenador(model.Entrenador e) {
-        // Lógica idéntica a registrarJugador pero apuntando a la tabla 'entrenadores'
-        return false; // Implementar siguiendo el ejemplo de arriba
+    public java.util.List<model.Jugador> listarJugadores() {
+        java.util.List<model.Jugador> lista = new java.util.ArrayList<>();
+        // Añadimos u.apellidos a la consulta
+        String sql = "SELECT u.id, u.nombre, u.apellidos, j.posicion, j.dorsal "
+                + "FROM usuarios u JOIN jugadores j ON u.id = j.usuario_id";
+
+        try (Connection conn = db.ConexionDB.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                model.Jugador j = new model.Jugador();
+                j.setId(rs.getInt("id"));
+                j.setNombre(rs.getString("nombre"));
+                j.setApellidos(rs.getString("apellidos")); // <-- IMPORTANTE: Cargar el apellido
+                j.setPosicion(rs.getString("posicion"));
+                j.setDorsal(rs.getInt("dorsal"));
+                lista.add(j);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
     }
 }

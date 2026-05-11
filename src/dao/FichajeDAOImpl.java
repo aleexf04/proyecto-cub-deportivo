@@ -6,10 +6,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FichajeDAOImpl {
+public class FichajeDAOImpl implements FichajeDAO{
 
     @Override
-    public boolean asignarEquipo(inr idJugador, int idEquipo) {
+    public boolean asignarEquipo(int idJugador, int idEquipo) {
         String sql = "INSERT INTO fichajes(jugador_id, equipo_id, fecha_fichaje) VALUES (?,?, CURDATE())";
         try (Connection conn = ConexionDB.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, idJugador);
@@ -23,15 +23,18 @@ public class FichajeDAOImpl {
 
     @Override
     public List<FichajeDTO> listarFichajes() {
+        List <FichajeDTO> lista = new ArrayList<>();
         String sql = "SELECT u.nombre, u.apellidos, e.nombre AS nombre_equipo, j.posicion "
                 + "FROM fichajes f "
                 + "JOIN jugadores j ON f.jugador_id = j.usuario_id "
                 + "JOIN usuarios u ON j.usuario_id = u.id "
                 + "JOIN equipos e ON f.equipo_id = e.id";
-        try (Connection conn = ConexionDB.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = ConexionDB.getConnection(); 
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 FichajeDTO dto = new FichajeDTO();
-
+                // Combinamos nombre y apellido para el DTO
                 dto.setNombreJugador(rs.getString("nombre") + " " + rs.getString("apellidos"));
                 dto.setNombreEquipo(rs.getString("nombre_equipo"));
                 dto.setPosicion(rs.getString("posicion"));
