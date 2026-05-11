@@ -1,0 +1,45 @@
+package dao;
+
+import db.ConexionDB;
+import dto.FichajeDTO;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class FichajeDAOImpl {
+
+    @Override
+    public boolean asignarEquipo(inr idJugador, int idEquipo) {
+        String sql = "INSERT INTO fichajes(jugador_id, equipo_id, fecha_fichaje) VALUES (?,?, CURDATE())";
+        try (Connection conn = ConexionDB.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idJugador);
+            ps.setInt(2, idEquipo);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public List<FichajeDTO> listarFichajes() {
+        String sql = "SELECT u.nombre, u.apellidos, e.nombre AS nombre_equipo, j.posicion "
+                + "FROM fichajes f "
+                + "JOIN jugadores j ON f.jugador_id = j.usuario_id "
+                + "JOIN usuarios u ON j.usuario_id = u.id "
+                + "JOIN equipos e ON f.equipo_id = e.id";
+        try (Connection conn = ConexionDB.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                FichajeDTO dto = new FichajeDTO();
+
+                dto.setNombreJugador(rs.getString("nombre") + " " + rs.getString("apellidos"));
+                dto.setNombreEquipo(rs.getString("nombre_equipo"));
+                dto.setPosicion(rs.getString("posicion"));
+                lista.add(dto);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+}
