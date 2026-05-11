@@ -4,6 +4,7 @@ import dao.UsuarioDAO;
 import dao.UsuarioDAOImpl;
 import java.awt.GridLayout;
 import javax.swing.*;
+import model.Usuario;
 
 public class LoginFrame extends JFrame{
     private JTextField txtUser;
@@ -18,13 +19,13 @@ public class LoginFrame extends JFrame{
         setSize(350, 250);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setLayout(new GridLayout(4, 1, 10, 10));
+        setLayout(new GridLayout(0, 1, 10, 10));
 
         //Componentes
         txtUser = new JTextField();
         txtPass = new JPasswordField();
         btnLogin = new JButton("Entrar");
-        btnRegister = new JButton("¿No tienes cuenta) Regístrate");
+        btnRegister = new JButton("¿No tienes cuenta? Regístrate");
 
 
         //Diseño sencillo
@@ -46,15 +47,18 @@ public class LoginFrame extends JFrame{
     }
 
     private void ejecutarLogin(){
-        String user = txtUser.getText();
+        String username = txtUser.getText();
         String pass = new String(txtPass.getPassword());
 
-        if(usuarioDAO.login(user,pass)){
-            JOptionPane.showMessageDialog(this, "¡Bienvenido al Club!");
-            new MainDashboard().setVisible(true);
-            this.dispose();
-        } else {
-            JOptionPane.showMessageDialog(this, "Error", "Error", JOptionPane.ERROR_MESSAGE);
+        Usuario user = usuarioDAO.validar(username, pass);
+
+        if(user != null){
+            JOptionPane.showMessageDialog(this, "¡Bienvenido, " + user.getUsername());
+
+            new MainDashboard(user).setVisible(true);
+            dispose();
+        }else{
+            JOptionPane.showMessageDialog(this, "Error: usuario o contraseña incorrectos");
         }
     }
 }

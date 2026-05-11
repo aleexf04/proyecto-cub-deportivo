@@ -7,7 +7,7 @@ public class Usuario {
     private String email;
     private String nombre;
     private String apellidos;
-    private String rol; // "ENTRENADOR" o "JUGADOR"
+    private String rol;
 
     // Constructor vacío (obligatorio para POJOs)
     public Usuario() {}

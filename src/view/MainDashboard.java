@@ -26,8 +26,17 @@ public class MainDashboard extends JFrame {
     private DefaultTableModel modeloTablaJugadores;
     private JTable tablaFichajes;
     private DefaultTableModel modeloTablaFichajes;
+    private Usuario usuarioSesion;
 
-    public MainDashboard(){
+    // ... debajo de tus JTable y modelos ...
+    private JButton btnGuardarEq;
+    private JButton btnEliminarEq;
+    private JButton btnFichar;
+    private JButton btnAsignarEntrenador; // Si lo añadiste para el entrenador
+
+    public MainDashboard(Usuario user){
+
+        this.usuarioSesion = user;
         setTitle("Club Deportivo Ayala");
         setSize(1000, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -43,9 +52,12 @@ public class MainDashboard extends JFrame {
         //3. Panel lateral
         initPanelLateral();
 
+        // 4. Restricciones para entrenadores y jugadores
+        aplicarRestricciones();
+
         //Cargar datos iniciales
         actualizarTabla();
-        actualizarCombos();
+        actualizarCombos();        
     }
 
     private void initMenu(){
@@ -104,8 +116,8 @@ public class MainDashboard extends JFrame {
 
         txtNombreEquipo = new JTextField();
         txtCategoria = new JTextField();
-        JButton  btnGuardarEq = new JButton("Aladir equipo");
-        JButton btnEliminarEq = new JButton("Elimiar equipo");
+        btnGuardarEq = new JButton("Aladir equipo");
+        btnEliminarEq = new JButton("Elimiar equipo");
 
         pnlEquipos.add(new JLabel("Nombre"));
         pnlEquipos.add(txtNombreEquipo);
@@ -120,7 +132,7 @@ public class MainDashboard extends JFrame {
 
         comboJugadores = new JComboBox<>();
         comboEquipos = new JComboBox<>();
-        JButton btnFichar = new JButton("Confirmar Fichaje");
+        btnFichar = new JButton("Confirmar Fichaje");
 
         pnlFichajes.add(new JLabel("Jugador:"));
         pnlFichajes.add(comboJugadores);
@@ -215,6 +227,23 @@ public class MainDashboard extends JFrame {
             } else {
                 JOptionPane.showMessageDialog(this, "Error al realizar el fichaje");
             }
+        }
+    }
+
+    private void aplicarRestricciones(){
+        if("JUGADOR".equalsIgnoreCase(usuarioSesion.getRol())){
+            btnGuardarEq.setEnabled(false);
+            btnEliminarEq.setEnabled(false);
+            txtNombreEquipo.setEnabled(false);
+            txtCategoria.setEnabled(false);
+
+            //Bloqueamos los fichajes
+            btnFichar.setEnabled(false);
+            comboJugadores.setEnabled(false);
+            comboEquipos.setEnabled(false);
+
+            //Cambiamos el titulo para que solo el jugador pueda VER
+            setTitle(getTitle() + " - [MODO LECTURA]");
         }
     }
 

@@ -4,6 +4,7 @@ import db.ConexionDB;
 import java.sql.*;
 import model.Entrenador;
 import model.Jugador;
+import model.Usuario;
 
 public class UsuarioDAOImpl implements UsuarioDAO {
 
@@ -149,5 +150,25 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             e.printStackTrace();
         }
         return lista;
+    }
+
+    @Override
+    public Usuario validar(String username, String password){
+        String sql = "SELECT * FROM usuarios WHERE username = ? AND password = ?";
+        try(Connection conn = ConexionDB.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+                ps.setString(1, username);
+                ps.setString(2, password);
+                ResultSet rs = ps.executeQuery();
+                if(rs.next()){
+                    Usuario u = new Usuario();
+                    u.setId(rs.getInt("id"));
+                    u.setUsername(rs.getString("username"));
+                    u.setRol(rs.getString("rol"));
+                    return u;
+                }
+            }catch(SQLException e){
+                e.printStackTrace();
+            }return null;
     }
 }
