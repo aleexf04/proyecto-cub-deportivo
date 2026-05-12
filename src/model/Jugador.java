@@ -2,11 +2,11 @@ package model;
 
 public class Jugador extends Usuario {
 
-    private String posicion; // Ejemplo: Delantero, Portero...
-    private int dorsal;      // Número de la camiseta
+    private String posicion;
+    private int dorsal;
 
     public Jugador() {
-        super(); // Llama al constructor de Usuario
+        super();
     }
 
     // Getters y Setters específicos de Jugador
@@ -28,7 +28,6 @@ public class Jugador extends Usuario {
 
     @Override
     public String toString() {
-        // Esto es lo que aparecerá en el ComboBox
         return getNombre() + " " + getApellidos() + " (" + posicion + ")";
     }
 }

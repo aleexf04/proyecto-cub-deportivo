@@ -3,7 +3,7 @@ package view;
 import dao.*;
 import dto.FichajeDTO;
 import java.awt.*;
-import java.util.List; // Importante: java.util, no java.awt
+import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import model.*;
@@ -135,7 +135,6 @@ public class MainDashboard extends JFrame {
         comboEquipos = new JComboBox<>();
         btnFichar = new JButton("Confirmar Fichaje");
         btnEliminarFichaje = new JButton("Eliminar Fichaje");
-        btnEliminarFichaje.setBackground(new Color(255, 200, 200));
 
         pnlFichajes.add(new JLabel("Jugador:"));
         pnlFichajes.add(comboJugadores);

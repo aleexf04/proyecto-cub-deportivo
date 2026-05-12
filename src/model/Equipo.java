@@ -40,13 +40,8 @@ public class Equipo {
         this.categoria = categoria;
     }
 
-    // @Override
-    // public String toString() {
-    //     return nombre;
-    // } // Útil para los JComboBox de Swing
-
     @Override
     public String toString() {
-        return getNombre(); // Así en el combo de equipos solo sale el nombre
+        return getNombre();
     }
 }

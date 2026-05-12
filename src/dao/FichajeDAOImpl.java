@@ -34,7 +34,6 @@ public class FichajeDAOImpl implements FichajeDAO{
             ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 FichajeDTO dto = new FichajeDTO();
-
                 dto.setIdJugador(rs.getInt("Jugador_id"));
                 dto.setIdEquipo(rs.getInt("Equipo_id"));
                 // Combinamos nombre y apellido para el DTO

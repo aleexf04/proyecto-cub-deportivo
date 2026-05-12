@@ -1,7 +1,7 @@
 package model;
 
 public class Entrenador extends Usuario {
-    private String especialidad; // Ejemplo: Táctica, Porteros...
+    private String especialidad;
     private int experienciaAnios;
 
     public Entrenador() {

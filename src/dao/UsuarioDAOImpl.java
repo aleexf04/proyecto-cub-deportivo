@@ -39,8 +39,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
                 psJug.setInt(3, j.getDorsal());
                 psJug.executeUpdate();
             }
-
-            conn.commit(); // Si todo va bien, guardamos
+            conn.commit();
             return true;
         } catch (SQLException ex) {
             if (conn != null) try {
@@ -64,7 +63,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
         Connection conn = null;
         try {
             conn = ConexionDB.getConnection();
-            conn.setAutoCommit(false); // Transacción para asegurar que se crean ambos registros
+            conn.setAutoCommit(false);
 
             // 1. Insertar en la tabla padre (USUARIOS)
             String sqlUser = "INSERT INTO usuarios (username, password, email, nombre, apellidos, rol) VALUES (?,?,?,?,?,?)";
@@ -131,7 +130,6 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     @Override
     public java.util.List<model.Jugador> listarJugadores() {
         java.util.List<model.Jugador> lista = new java.util.ArrayList<>();
-        // Añadimos u.apellidos a la consulta
         String sql = "SELECT u.id, u.nombre, u.apellidos, j.posicion, j.dorsal "
                 + "FROM usuarios u JOIN jugadores j ON u.id = j.usuario_id";
 
@@ -141,7 +139,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
                 model.Jugador j = new model.Jugador();
                 j.setId(rs.getInt("id"));
                 j.setNombre(rs.getString("nombre"));
-                j.setApellidos(rs.getString("apellidos")); // <-- IMPORTANTE: Cargar el apellido
+                j.setApellidos(rs.getString("apellidos"));
                 j.setPosicion(rs.getString("posicion"));
                 j.setDorsal(rs.getInt("dorsal"));
                 lista.add(j);

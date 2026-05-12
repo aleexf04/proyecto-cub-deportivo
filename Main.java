@@ -6,7 +6,6 @@ public class Main {
         // Ejecutamos la interfaz en el hilo de eventos de Swing (buena práctica)
         SwingUtilities.invokeLater(() -> {
             LoginFrame login = new LoginFrame();
-            //
             login.setVisible(true);
         });
     }

@@ -1,10 +1,10 @@
 package dao;
 
 import db.ConexionDB;
-import model.Equipo;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import model.Equipo;
 
 public class EquipoDAOImpl implements EquipoDAO {
     @Override
@@ -14,7 +14,6 @@ public class EquipoDAOImpl implements EquipoDAO {
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-            
             while (rs.next()) {
                 lista.add(new Equipo(
                     rs.getInt("id"),
