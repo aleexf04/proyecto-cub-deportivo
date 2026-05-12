@@ -1,6 +1,7 @@
 package model;
 
 public class Entrenador extends Usuario {
+
     private String especialidad;
     private int experienciaAnios;
 
@@ -8,9 +9,19 @@ public class Entrenador extends Usuario {
         super();
     }
 
-    public String getEspecialidad() { return especialidad; }
-    public void setEspecialidad(String especialidad) { this.especialidad = especialidad; }
+    public String getEspecialidad() {
+        return especialidad;
+    }
 
-    public int getExperienciaAnios() { return experienciaAnios; }
-    public void setExperienciaAnios(int experienciaAnios) { this.experienciaAnios = experienciaAnios; }
+    public void setEspecialidad(String especialidad) {
+        this.especialidad = especialidad;
+    }
+
+    public int getExperienciaAnios() {
+        return experienciaAnios;
+    }
+
+    public void setExperienciaAnios(int experienciaAnios) {
+        this.experienciaAnios = experienciaAnios;
+    }
 }

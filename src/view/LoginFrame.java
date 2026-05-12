@@ -42,7 +42,7 @@ public class LoginFrame extends JFrame{
         //Evento para el registro
         btnRegister.addActionListener(e -> {
             new RegistroFrame().setVisible(true);
-            this.dispose();
+            this.dispose(); // El this.dispose() hace que esta pestaña de Login se cierre y no quede flotando, a su vez borra memoria de la RAM
         });
     }
 
@@ -50,6 +50,7 @@ public class LoginFrame extends JFrame{
         String username = txtUser.getText();
         String pass = new String(txtPass.getPassword());
 
+        //Creamos el objeto de la clase Usuario para validar los elementos username y pass y de esa manera ejecutar o no el login
         Usuario user = usuarioDAO.validar(username, pass);
 
         if(user != null){

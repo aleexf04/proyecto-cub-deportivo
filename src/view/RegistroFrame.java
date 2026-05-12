@@ -22,6 +22,7 @@ public class RegistroFrame extends JFrame {
 
     private UsuarioDAO usuarioDAO = new UsuarioDAOImpl();
 
+    //Creamos la pestaña de registro
     public RegistroFrame() {
         setTitle("Registro de Nuevo Miembro");
         setSize(400, 500);
@@ -33,6 +34,7 @@ public class RegistroFrame extends JFrame {
         JPanel pnlGeneral = new JPanel(new GridLayout(6, 2, 5, 5));
         pnlGeneral.setBorder(BorderFactory.createTitledBorder("Datos de Usuario"));
 
+        //Añadimos todos los valores, con sus labels para que puedan añadir texto y vean el identificativo
         pnlGeneral.add(new JLabel("Username:"));
         txtUser = new JTextField();
         pnlGeneral.add(txtUser);
@@ -52,9 +54,13 @@ public class RegistroFrame extends JFrame {
         comboRol = new JComboBox<>(new String[]{"JUGADOR", "ENTRENADOR"});
         pnlGeneral.add(comboRol);
 
+
+        //Aqui viene la dificultad
         // --- Panel Central: Campos Dinámicos ---
         panelDinamico = new JPanel(new GridLayout(2, 2, 5, 5));
         panelDinamico.setBorder(BorderFactory.createTitledBorder("Información Específica"));
+        //Primeramente los vamos a inicializar como si estuvieramos añadiendo un jugador para que los label 
+        // no se vean vacíos pero más adelante veremos como dependiendo de la opción del comBox cambian
         lblDato1 = new JLabel("Posición:");
         txtDato1 = new JTextField();
         lblDato2 = new JLabel("Dorsal:");
@@ -64,7 +70,8 @@ public class RegistroFrame extends JFrame {
         panelDinamico.add(lblDato2);
         panelDinamico.add(txtDato2);
 
-        // --- Panel Sur: Botones ---
+        // --- Botones ---
+        //Aqui añadimos los botones para finalizar el registro o volver atrás
         JPanel pnlBotones = new JPanel();
         btnRegistrar = new JButton("Finalizar Registro");
         btnVolver = new JButton("Volver");
@@ -86,6 +93,9 @@ public class RegistroFrame extends JFrame {
         });
     }
 
+
+    //Aquí es donde cambiamos los campos dinámicos, es decir que si el item del comboRol es JUGADOR
+    // los campos serán Posicion y Dorsal, pero si es otro (ENTRENADOR), sus campos serán diferentes
     private void actualizarCampos() {
         if (comboRol.getSelectedItem().equals("JUGADOR")) {
             lblDato1.setText("Posición:");
@@ -96,10 +106,12 @@ public class RegistroFrame extends JFrame {
         }
     }
 
+    //Le volvemos a hacer un casting para que el rol salga en tipo String
     private void registrar() {
         String rol = (String) comboRol.getSelectedItem();
         boolean exito = false;
 
+        //Aqui comprobamos si el equasl es jugador se crea un jugador y si no lo es en el else se crea Entrenador
         if (rol.equals("JUGADOR")) {
             Jugador j = new Jugador();
             rellenarDatosBase(j);
@@ -114,6 +126,7 @@ public class RegistroFrame extends JFrame {
             exito = usuarioDAO.registrarEntrenador(ent);
         }
 
+        //con la variable booleana vemos si se hac completado correctamente los dos campos y salta un mensaje de confirmación o error
         if (exito) {
             JOptionPane.showMessageDialog(this, "Registro completado con éxito");
             new LoginFrame().setVisible(true);
@@ -123,9 +136,12 @@ public class RegistroFrame extends JFrame {
         }
     }
 
+
+    //este método lo que hace es asignar los datos que hay en los cuadros de texto a la creación de usuarios
+    // u es el usuario vacío al que se le está asignando cada atributo, nombre, contraseña, email, etc etc
     private void rellenarDatosBase(model.Usuario u) {
         u.setUsername(txtUser.getText());
-        u.setPassword(new String(txtPass.getPassword()));
+        u.setPassword(new String(txtPass.getPassword()));// lo creamos como String para que coincida el dato con el creado en Usuario
         u.setEmail(txtEmail.getText());
         u.setNombre(txtNombre.getText());
         u.setApellidos(txtApellidos.getText());

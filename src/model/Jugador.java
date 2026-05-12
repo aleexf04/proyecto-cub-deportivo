@@ -9,7 +9,6 @@ public class Jugador extends Usuario {
         super();
     }
 
-    // Getters y Setters específicos de Jugador
     public String getPosicion() {
         return posicion;
     }

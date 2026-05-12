@@ -133,7 +133,9 @@ public class UsuarioDAOImpl implements UsuarioDAO {
         String sql = "SELECT u.id, u.nombre, u.apellidos, j.posicion, j.dorsal "
                 + "FROM usuarios u JOIN jugadores j ON u.id = j.usuario_id";
 
-        try (Connection conn = db.ConexionDB.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = db.ConexionDB.getConnection(); 
+            PreparedStatement ps = conn.prepareStatement(sql); 
+            ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 model.Jugador j = new model.Jugador();
