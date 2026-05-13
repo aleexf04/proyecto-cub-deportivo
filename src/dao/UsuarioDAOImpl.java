@@ -120,9 +120,9 @@ public class UsuarioDAOImpl implements UsuarioDAO {
         try (Connection conn = ConexionDB.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, user);
             ps.setString(2, pass);
-            return ps.executeQuery().next();
+            return ps.executeQuery().next();//esto devuelve true si el usuario y la contraseña son correctos
         } catch (SQLException e) {
-            return false;
+            return false; //aquí devolvemos false si el login falla, el catch recoge el programa y devuelve false
         }
     }
 
